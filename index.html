@@ -67,10 +67,10 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     .glass-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255,0.05);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255,0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .glass-card:hover {
@@ -79,7 +79,6 @@
     }
 
     /* ---------- LAYERED BACKGROUND SYSTEM ---------- */
-    /* Layer 1 (Bottom): Deep Navy + Blue Radial Glow */
     .mesh-bg {
       position: absolute; inset: 0; overflow: hidden; z-index: 0;
       background-color: #111827;
@@ -95,7 +94,7 @@
       bottom: -20%; right: -10%; border-radius: 50%; filter: blur(120px);
     }
 
-    /* Layer 2 (Middle): Infinite Scrolling Candlestick Chart */
+    /* ---------- CHART SCROLL LAYER ---------- */
     .chart-scroll-layer {
       position: absolute; inset: 0; z-index: 1;
       opacity: 0.1; pointer-events: none; overflow: hidden;
@@ -317,7 +316,7 @@
 
 
   <!-- ============================================
-       LIVE MARKET TABLE — True API Integration
+       LIVE MARKET TABLE — CoinGecko API + Skeletons
        ============================================ -->
   <section id="market" class="relative py-24 px-4 sm:px-6 lg:px-8 z-10">
     <div class="max-w-5xl mx-auto">
@@ -325,7 +324,7 @@
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 mb-4 relative">
           <span class="w-2 h-2 rounded-full bg-green-400 absolute ml-0 animate-ping"></span>
           <span class="w-2 h-2 rounded-full bg-green-400 ml-0"></span>
-          <span class="text-green-400 text-xs font-semibold ml-3">Live Data via Binance API</span>
+          <span class="text-green-400 text-xs font-semibold ml-3">Live Data Feed</span>
         </div>
         <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Trade top-performing assets</h2>
         <p class="text-gray-400 max-w-xl mx-auto">Real-time prices updating every 10 seconds directly from the exchange.</p>
@@ -344,7 +343,6 @@
               </tr>
             </thead>
             <tbody id="marketTableBody">
-              <tr><td colSpan="5" class="px-6 py-8 text-center text-gray-500 text-sm">Connecting to exchange...</td></tr>
             </tbody>
           </table>
         </div>
@@ -652,7 +650,6 @@
       let price = heroSection.offsetHeight / 2;
       const totalWidth = heroSection.offsetWidth + 200;
 
-      // Generate a realistic looking candlestick chart chunk
       while (x < totalWidth) {
         const open = price;
         const close = open + (Math.random() - 0.5) * 60;
@@ -661,10 +658,8 @@
         const isGreen = close > open;
         const color = isGreen ? "rgba(34, 197, 94, 0.9)" : "rgba(239, 68, 68, 0.9)";
         
-        // Draw Wick
         svgContent += `<line x1="${x + 5}" y1="${high}" x2="${x + 5}" y2="${low}" stroke="${color}" stroke-width="1.5"/>`;
         
-        // Draw Body
         const yTop = Math.min(open, close);
         const bodyHeight = Math.max(Math.abs(close - open), 2);
         svgContent += `<rect x="${x}" y="${yTop}" width="10" height="${bodyHeight}" fill="${color}" rx="1"/>`;
@@ -674,7 +669,6 @@
       }
       svgContent += `</svg>`;
       
-      // Double the SVG string inside the flex container to allow seamless CSS infinite loop
       chartInner.innerHTML = svgContent + svgContent;
     })();
 
@@ -705,12 +699,12 @@
         let delay = isDeleting ? 40 : 70;
 
         if (!isDeleting && charIndex > currentPhrase.length) {
-          delay = 2000; // Pause at end of word
+          delay = 2000;
           isDeleting = true;
         } else if (isDeleting && charIndex === 0) {
           isDeleting = false;
           phraseIndex = (phraseIndex + 1) % phrases.length;
-          delay = 300; // Brief pause before next word
+          delay = 300;
         }
 
         setTimeout(type, delay);
@@ -758,12 +752,12 @@
               function step(timestamp) {
                 if (!startTime) startTime = timestamp;
                 const progress = Math.min((timestamp - startTime) / 2000, 1);
-                const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+                const eased = 1 - Math.pow(1 - progress, 3);
                 el.textContent = prefix + (eased * target).toFixed(decimals) + suffix;
                 if (progress < 1) requestAnimationFrame(step);
               }
               requestAnimationFrame(step);
-            }, i * 200); // Stagger start
+            }, i * 200);
           });
           observer.disconnect();
         }
@@ -776,9 +770,149 @@
 
 
     /* =============================================
-       7. TRUE LIVE API INTEGRATION (Binance)
+       7. TRUE LIVE API INTEGRATION (CoinGecko + Skeletons)
        ============================================= */
-    
+    (function initLiveMarkets() {
+      const tbody = document.getElementById('marketTableBody');
+      if (!tbody) return;
+
+      const assets = [
+        { id: 'bitcoin', name: 'Bitcoin', symbol: 'BTC', icon: 'fa-brands fa-bitcoin', color: '#f7931a' },
+        { id: 'ethereum', name: 'Ethereum', symbol: 'ETH', icon: 'fa-brands fa-ethereum', color: '#627eea' },
+        { id: 'solana', name: 'Solana', symbol: 'SOL', icon: 'fa-solid fa-sun', color: '#9945FF' },
+        { id: 'binancecoin', name: 'BNB', symbol: 'BNB', icon: 'fa-solid fa-coins', color: '#FACC15' }
+      ];
+
+      let previousPrices = {};
+
+      function formatPrice(price) {
+        if (price >= 1000) return price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (price >= 1) return price.toFixed(2);
+        return price.toFixed(4);
+      }
+
+      function generateSparklineSVG(prices) {
+        if (!prices || prices.length === 0) return '';
+        const min = Math.min(...prices);
+        const max = Math.max(...prices);
+        const range = max - min || 1;
+        const h = 30, w = 72;
+        const stepX = w / (prices.length - 1);
+        
+        let path = '';
+        prices.forEach((p, i) => {
+          const x = i * stepX;
+          const y = h - ((p - min) / range) * (h - 4) - 2; 
+          path += (i === 0 ? 'M' : 'L') + `${x.toFixed(2)} ${y.toFixed(2)} `;
+        });
+        
+        const isUp = prices[prices.length - 1] >= prices[0];
+        const strokeColor = isUp ? '#22c55e' : '#ef4444';
+        
+        return `<path d="${path}" stroke="${strokeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" style="stroke-dasharray: 150; stroke-dashoffset: 150; animation: drawLine 1.5s ease forwards;" />`;
+      }
+
+      function buildInitialTable() {
+        tbody.innerHTML = '';
+        assets.forEach(asset => {
+          const tr = document.createElement('tr');
+          tr.className = 'market-row border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200';
+          tr.id = `row-${asset.id}`;
+          tr.innerHTML = `
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center shrink-0"><i class="${asset.icon}" style="color: ${asset.color}; font-size: 16px;"></i></div>
+                <div><p class="text-white text-sm font-medium">${asset.name}</p><p class="text-gray-500 text-xs">${asset.symbol}</p></div>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-right"><span class="inline-block w-20 h-4 bg-white/5 rounded animate-pulse" id="price-${asset.id}"></span></td>
+            <td class="px-6 py-4 text-right hidden sm:table-cell">
+              <span class="inline-block w-16 h-6 bg-white/5 rounded-full animate-pulse" id="change-${asset.id}"></span>
+            </td>
+            <td class="px-6 py-4 hidden md:table-cell">
+              <svg width="72" height="30" viewBox="0 0 72 30" fill="none" xmlns="http://www.w3.org/2000/svg" id="spark-${asset.id}"></svg>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <button class="trade-btn px-4 py-2 text-xs font-semibold text-gray-300 border border-gray-600 rounded-full">Buy</button>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      async function fetchLiveData() {
+        try {
+          const idsArray = assets.map(a => a.id).join(',');
+          const res = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${idsArray}&order=market_cap_desc&sparkline=true&price_change_percentage=24h`);
+          
+          if (!res.ok) throw new Error('CoinGecko API failed');
+          const data = await res.json();
+
+          data.forEach(coin => {
+            const id = coin.id;
+            const newPrice = coin.current_price;
+            const changePercent = coin.price_change_percentage_24h_in_currency;
+            const isPositive = changePercent >= 0;
+
+            const row = document.getElementById(`row-${id}`);
+            const priceEl = document.getElementById(`price-${id}`);
+            const changeEl = document.getElementById(`change-${id}`);
+            const sparkEl = document.getElementById(`spark-${id}`);
+
+            if (!row || !priceEl) return;
+
+            const oldPrice = previousPrices[id];
+            if (oldPrice !== undefined && oldPrice !== newPrice) {
+              row.classList.remove('row-flash-up', 'row-flash-down');
+              void row.offsetWidth; 
+              if (newPrice > oldPrice) {
+                row.classList.add('row-flash-up');
+              } else if (newPrice < oldPrice) {
+                row.classList.add('row-flash-down');
+              }
+              setTimeout(() => row.classList.remove('row-flash-up', 'row-flash-down'), 600);
+            }
+
+            previousPrices[id] = newPrice;
+
+            // Replace skeleton span with actual price text
+            if (priceEl.tagName === 'SPAN') {
+              const newPriceEl = document.createElement('span');
+              newPriceEl.id = priceEl.id;
+              newPriceEl.className = 'text-white text-sm font-medium';
+              newPriceEl.innerText = `$${formatPrice(newPrice)}`;
+              priceEl.replaceWith(newPriceEl);
+            } else {
+              priceEl.innerText = `$${formatPrice(newPrice)}`;
+            }
+
+            // Replace skeleton span with actual change text
+            if (changeEl.tagName === 'SPAN') {
+              const newChangeEl = document.createElement('span');
+              newChangeEl.id = changeEl.id;
+              newChangeEl.className = `inline-flex items-center px-2.5 py-1 rounded-full ${isPositive ? 'bg-green-400/10 text-green-400' : 'bg-red-400/10 text-red-400'} text-xs font-medium`;
+              newChangeEl.innerHTML = `<i class="fa-solid fa-caret-${isPositive ? 'up' : 'down'} mr-1 text-[10px]"></i>${changePercent.toFixed(2)}%`;
+              changeEl.replaceWith(newChangeEl);
+            } else {
+              changeEl.className = `inline-flex items-center px-2.5 py-1 rounded-full ${isPositive ? 'bg-green-400/10 text-green-400' : 'bg-red-400/10 text-red-400'} text-xs font-medium`;
+              changeEl.innerHTML = `<i class="fa-solid fa-caret-${isPositive ? 'up' : 'down'} mr-1 text-[10px]"></i>${changePercent.toFixed(2)}%`;
+            }
+
+            // Update Dynamic Sparkline
+            if (coin.sparkline_in_7d && coin.sparkline_in_7d.price) {
+              const last24Points = coin.sparkline_in_7d.price.slice(-24);
+              sparkEl.innerHTML = generateSparklineSVG(last24Points);
+            }
+          });
+
+        } catch (error) {
+          console.error("API fetch error handled gracefully:", error.message);
+        }
+      }
+
+      buildInitialTable();
+      fetchLiveData();
+      setInterval(fetchLiveData, 10000);
+    })();
 
 
     /* =============================================
@@ -823,7 +957,6 @@
           const icon = toggle.querySelector('.faq-icon');
           const isOpen = toggle.getAttribute('aria-expanded') === 'true';
 
-          // Close all other items first
           toggles.forEach(otherToggle => {
             if (otherToggle !== toggle) {
               otherToggle.setAttribute('aria-expanded', 'false');
@@ -832,7 +965,6 @@
             }
           });
 
-          // Toggle current item
           toggle.setAttribute('aria-expanded', !isOpen);
           content.style.maxHeight = isOpen ? '0' : content.scrollHeight + 'px';
           icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(45deg)';
