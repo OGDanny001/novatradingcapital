@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Novatrading Capital — Features</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { poppins: ['Poppins', 'sans-serif'] }, colors: { base: '#111827', primary: '#1D4ED8', accent: '#FACC15' } } } };
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; } html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background-color: #111827; color: #e5e7eb; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: #111827; } ::-webkit-scrollbar-thumb { background: #1D4ED8; border-radius: 4px; }
+    .glass { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .glass-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(29, 78, 216, 0.15); }
+    .mesh-bg { position: absolute; inset: 0; overflow: hidden; z-index: 0; background-color: #111827; }
+    .mesh-blob-1 { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(29,78,216,0.4), transparent 70%); top: -15%; left: -10%; border-radius: 50%; filter: blur(120px); }
+    .mesh-blob-2 { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(29,78,216,0.3), transparent 70%); bottom: -20%; right: -10%; border-radius: 50%; filter: blur(120px); }
+    .chart-scroll-layer { position: absolute; inset: 0; z-index: 1; opacity: 0.1; pointer-events: none; overflow: hidden; mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%); }
+    .chart-scroll-inner { display: flex; width: 200%; height: 100%; animation: scrollChart 60s linear infinite; }
+    @keyframes scrollChart { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .typing-cursor { display: inline-block; color: #1D4ED8; font-weight: 300; margin-left: 2px; animation: cursorBlink 0.75s step-end infinite; }
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .reveal-section { opacity: 0; transform: translateY(40px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+    .reveal-section.active { opacity: 1; transform: translateY(0); }
+    .mobile-menu { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.3s ease; }
+    .mobile-menu.open { max-height: 300px; opacity: 1; }
+    .risk-box { border: 1px solid rgba(250, 204, 21, 0.25); background: rgba(250, 204, 21, 0.04); }
+  </style>
+</head>
+<body class="font-poppins">
+
+  <!-- HEADER -->
+  <header id="navbar" class="glass fixed top-0 left-0 w-full z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-2 shrink-0"><div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center"><span class="text-white font-bold text-lg">N</span></div><span class="text-white font-semibold text-lg hidden sm:inline">Novatrading<span class="text-accent">.</span></span></a>
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="index.html" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">Home</a>
+          <a href="features.html" class="text-white text-sm font-medium">Features</a>
+          <a href="markets.html" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">Markets</a>
+          <a href="faq.html" class="text-gray-300 hover:text-white text-sm font-medium transition-colors">FAQ</a>
+        </nav>
+        <a href="auth.html" class="hidden md:inline-flex px-5 py-2 text-sm font-semibold text-accent border-2 border-accent rounded-full hover:bg-accent hover:text-base transition-all">Get Started</a>
+        <button id="menuToggle" class="md:hidden text-white"><i class="fa-solid fa-bars text-xl"></i></button>
+      </div>
+      <div id="mobileMenu" class="mobile-menu md:hidden"><div class="pb-4 pt-2 flex flex-col gap-3"><a href="index.html" class="text-gray-300 hover:text-white text-sm font-medium py-2 mobile-link">Home</a><a href="features.html" class="text-white text-sm font-medium py-2 mobile-link">Features</a><a href="markets.html" class="text-gray-300 hover:text-white text-sm font-medium py-2 mobile-link">Markets</a><a href="faq.html" class="text-gray-300 hover:text-white text-sm font-medium py-2 mobile-link">FAQ</a></div></div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="relative min-h-screen flex flex-col justify-center items-center pt-40 pb-24 overflow-hidden">
+    <div class="mesh-bg"><div class="mesh-blob-1"></div><div class="mesh-blob-2"></div></div>
+    <div class="chart-scroll-layer"><div class="chart-scroll-inner" id="chartInner"></div></div>
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium mb-8"><i class="fa-solid fa-microchip text-[10px]"></i> Our Technology Edge</div>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.15] tracking-tight mb-6">
+        Cutting-Edge<br/><span class="text-primary font-bold inline-block min-h-[1.15em]" id="typingText"></span><span class="typing-cursor">|</span><br/>for the Modern Trader
+      </h1>
+      <p class="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto mb-10">Built from the ground up with institutional-grade infrastructure. Every millisecond of latency eliminated.</p>
+      <a href="auth.html" class="inline-flex items-center gap-2 px-8 py-3.5 bg-primary text-white font-semibold rounded-full hover:bg-blue-700 transition-colors text-sm shadow-lg shadow-primary/20">Experience It Now <i class="fa-solid fa-arrow-right text-xs"></i></a>
+    </div>
+    <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-base to-transparent z-10"></div>
+  </section>
+
+  <!-- BENTO GRID (3 Cols) -->
+  <section class="relative py-24 px-4 sm:px-6 lg:px-8 z-10">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16 reveal-section">
+        <p class="text-primary text-sm font-semibold tracking-widest uppercase mb-3">Core Capabilities</p>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Engineered for performance</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div class="glass-card rounded-2xl p-8 reveal-section">
+          <div class="w-14 h-14 rounded-xl bg-primary/15 flex items-center justify-center mb-6"><i class="fa-solid fa-bolt text-primary text-xl"></i></div>
+          <h3 class="text-white text-xl font-semibold mb-3">Ultra-Low Latency</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">Co-located servers in NY, London, and Tokyo. Average execution under 0.3ms.</p>
+          <p class="text-primary font-bold text-lg">0.28ms <span class="text-gray-500 text-xs font-normal">Avg. Exec</span></p>
+        </div>
+        <div class="glass-card rounded-2xl p-8 reveal-section">
+          <div class="w-14 h-14 rounded-xl bg-accent/15 flex items-center justify-center mb-6"><i class="fa-solid fa-brain text-accent text-xl"></i></div>
+          <h3 class="text-white text-xl font-semibold mb-3">AI-Driven Analytics</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">Proprietary ML models analyze 50,000+ data points per second to surface signals.</p>
+          <p class="text-accent font-bold text-lg">73% <span class="text-gray-500 text-xs font-normal">Accuracy</span></p>
+        </div>
+        <div class="glass-card rounded-2xl p-8 reveal-section">
+          <div class="w-14 h-14 rounded-xl bg-purple-500/15 flex items-center justify-center mb-6"><i class="fa-solid fa-shield-halved text-purple-400 text-xl"></i></div>
+          <h3 class="text-white text-xl font-semibold mb-3">Military-Grade Security</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">AES-256 encryption, 95% cold storage, and real-time threat monitoring.</p>
+          <p class="text-purple-400 font-bold text-lg">SOC 2 <span class="text-gray-500 text-xs font-normal">Certified</span></p>
+        </div>
+        <div class="glass-card rounded-2xl p-8 reveal-section">
+          <div class="w-14 h-14 rounded-xl bg-green-500/15 flex items-center justify-center mb-6"><i class="fa-solid fa-layer-group text-green-400 text-xl"></i></div>
+          <h3 class="text-white text-xl font-semibold mb-3">Multi-Asset Support</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Trade crypto, forex, equities, and commodities from a single terminal.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-8 reveal-section">
+          <div class="w-14 h-14 rounded-xl bg-blue-500/15 flex items-center justify-center mb-6"><i class="fa-solid fa-code text-blue-400 text-xl"></i></div>
+          <h3 class="text-white text-xl font-semibold mb-3">Advanced API Access</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">10,000 req/min rate limits. Build custom trading bots with ease.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-8 reveal-section">
+          <div class="w-14 h-14 rounded-xl bg-red-500/15 flex items-center justify-center mb-6"><i class="fa-solid fa-headset text-red-400 text-xl"></i></div>
+          <h3 class="text-white text-xl font-semibold mb-3">24/7 Expert Support</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Dedicated account managers with less than 30s response times.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 pt-16 pb-8 px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="max-w-7xl mx-auto">
+      <div class="risk-box rounded-xl p-5 mb-8"><div class="flex items-start gap-3"><i class="fa-solid fa-triangle-exclamation text-accent mt-0.5 shrink-0"></i><div><p class="text-accent text-sm font-semibold mb-1">Risk Disclaimer</p><p class="text-gray-500 text-xs leading-relaxed">Trading financial instruments carries a high level of risk. Past performance is not indicative of future results.</p></div></div></div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/5 pt-6"><p class="text-gray-600 text-xs">&copy; 2025 Novatrading Capital.</p><p class="text-gray-600 text-xs">FINRA Member</p></div>
+    </div>
+  </footer>
+
+  <script>
+    // --- GLOBAL UTILITIES ---
+    function initMobileMenu() { const t=document.getElementById('menuToggle'),m=document.getElementById('mobileMenu'),i=t.querySelector('i');let o=false;t.addEventListener('click',()=>{o=!o;m.classList.toggle('open',o);i.className=o?'fa-solid fa-xmark text-xl':'fa-solid fa-bars text-xl';});document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>{o=false;m.classList.remove('open');i.className='fa-solid fa-bars text-xl';})); }
+    function initNavbarScroll() { window.addEventListener('scroll',()=>{document.getElementById('navbar').style.background=window.scrollY>50?'rgba(17, 24, 39, 0.9)':'rgba(17, 24, 39, 0.7)';}); }
+    function initChartBg() { const el=document.getElementById('chartInner');if(!el)return;const h=el.closest('section');let s=`<svg width="${h.offsetWidth+200}" height="${h.offsetHeight}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">`;let x=0,p=h.offsetHeight/2;while(x<h.offsetWidth+200){const o=p,c=o+(Math.random()-0.5)*60,h2=Math.min(o,c)-Math.random()*20,l=Math.max(o,c)+Math.random()*20,g=c>o,col=g?"rgba(34,197,94,0.9)":"rgba(239,68,68,0.9)";s+=`<line x1="${x+5}" y1="${h2}" x2="${x+5}" y2="${l}" stroke="${col}" stroke-width="1.5"/>`;s+=`<rect x="${x}" y="${Math.min(o,c)}" width="10" height="${Math.max(Math.abs(c-o),2)}" fill="${col}" rx="1"/>`;x+=30;p=c;}s+=`</svg>`;el.innerHTML=s+s; }
+    function initTypewriter(id,phrases){const el=document.getElementById(id);if(!el)return;let pI=0,cI=0,isD=false;function t(){const p=phrases[pI];el.textContent=isD?p.substring(0,cI--):p.substring(0,cI++);let d=isD?40:70;if(!isD&&cI>p.length){d=2000;isD=true;}else if(isD&&cI===0){isD=false;pI=(pI+1)%phrases.length;d=300;}setTimeout(t,d);}t();}
+    function initScrollAnimations(){const obs=new IntersectionObserver((e)=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('active');});},{threshold:0.1});document.querySelectorAll('.reveal-section').forEach(el=>obs.observe(el));}
+    document.addEventListener('DOMContentLoaded',()=>{initMobileMenu();initNavbarScroll();initChartBg();initScrollAnimations();initTypewriter('typingText',['Technology','Infrastructure','Analytics','Security']);});
+  </script>
+</body>
+</html>
